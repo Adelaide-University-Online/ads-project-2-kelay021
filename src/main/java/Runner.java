@@ -12,7 +12,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.*;
 
 public class Runner {
 
@@ -72,10 +72,133 @@ public class Runner {
         return graph;
     }
 
+    /**
+     * Computes the most time-efficient study schedule for the given {@link CourseGraph}.
+     *
+     * <p>Uses a modified version of Kahn's algorithm, a BFS-based approach to topological sorting. Rather than
+     * processing one course at a time, courses are batched into study periods of up to {@code maxConcurrentCourses}
+     * each.</p>
+     *
+     * <p>The schedule is optimal in the sense that every available course is started at the earliest possible period.
+     * Delaying any available course could only push back courses that depend on it, increasing the total number of
+     * study periods.</p>
+     *
+     * <p>A BFS-based topological sort was used instead of a DFS-based topological sort because a BFS-based approach
+     * makes it easier to group courses into study periods because it processes the graph level by level, instead of
+     * trying to figure out which courses sit at the same depth and can be studied at the same time, DFS is more
+     * complex for no practical benefit.</p>
+     *
+     * @param graph The course dependency graph to schedule
+     * @param maxConcurrentCourses The maximum number of courses a student may study at the same time
+     * @return An ordered list of study periods, where each study period is a list of course codes to study concurrently
+     * @throws IllegalStateException If a cycle is detected in the prerequisites, making it impossible to complete the
+     * degree
+     */
+    public static List<List<String>> computeSchedule(CourseGraph graph, int maxConcurrentCourses) {
+
+        // Retrieve both adjacency lists from the graph.
+        // 'prerequisites' is what each course needs before it can be started
+        // 'dependents' is the reverse, which courses to re-evaluate once a given course is completed.
+        Map<String, List<String>> prerequisites = graph.getPrerequisites();
+        Map<String, List<String>> dependents = graph.getDependents();
+
+        // ### Step 1: Calculate the initial in-degree for each course ###
+        //
+        // A course's unsatisfiedPrerequisites is the number of prerequisites it still needs before it can be studied.
+        // Initially this equals its total prerequisite count.
+        //
+        // As courses are completed, their dependents unsatisfiedPrerequisites are decremented. When a course reaches
+        // unsatisfiedPrerequisites of 0, all of its prerequisites are satisfied, and it can be added to the available
+        // queue.
+        //
+        // LinkedHashMap is used here to preserve the insertion order, to keep the final schedule deterministic and
+        // easier to debug.
+        Map<String, Integer> unsatisfiedPrerequisites = new LinkedHashMap<>();
+        for (String course : graph.getCourses()) {
+            unsatisfiedPrerequisites.put(course, prerequisites.get(course).size());
+        }
+
+        // ### Step 2: Seed the queue with immediately available courses ####
+        //
+        // Any course with an unsatisfiedPrerequisites of 0 has no prerequisites and can be studied immediately. These
+        // will form the starting point of the schedule.
+        //
+        // LinkedList is used because it implements the Queue and supports efficient O(1) insertion at the tail and
+        // removal at the head, which is exactly the access pattern required.
+        Queue<String> available = new LinkedList<>();
+        for (Map.Entry<String, Integer> entry : unsatisfiedPrerequisites.entrySet()) {
+            if (entry.getValue() == 0) available.add(entry.getKey());
+        }
+
+        List<List<String>> schedule = new ArrayList<>();
+
+        // Tracks the total number of courses successfully scheduled.
+        // Used after the main loop to detect whether a cycle prevented full scheduling.
+        int scheduleCount = 0;
+
+        // ### Step 3: Build the schedule study period by study period ###
+        //
+        // Each iteration of the loop represents one study period.
+        // The loop continues until there are no more courses available, which happens either when all courses have been
+        // scheduled, or when a cycle has left some courses permanently blocked.
+        while (!available.isEmpty()) {
+
+            // Fill this period up to the concurrent course limit.
+            List<String> period = new ArrayList<>();
+            // Math.min() ensures that isn't an attempt to poll more courses than are currently available (preventing
+            // an IndexOutOfBoundsException if the queue has fewer courses than the concurrency limit allows)
+            int slots = Math.min(maxConcurrentCourses, available.size());
+            for (int i = 0; i < slots; i++) {
+                period.add(available.poll());
+            }
+            schedule.add(period);
+            scheduleCount += period.size();
+
+            // ### Step 4: Unlock courses whose prerequisites are now satisfied ###
+            //
+            // For each course just completed, examine every course that depends on it. Decrement that dependent's
+            // unsatisfiedPrerequisites to reflect the one fewer unsatisfied prerequisites. If the
+            // unsatisfiedPrerequisites reaches 0, all prerequisites for that course are now met, and it can be queued
+            // for a future period.
+            for (String completed : period) {
+                for (String dependent : dependents.get(completed)) {
+                    int remaining = unsatisfiedPrerequisites.get(dependent) -1;
+                    unsatisfiedPrerequisites.put(dependent, remaining);
+                    if (remaining == 0) available.add(dependent);
+                }
+            }
+        }
+
+        // ### Step 5: Cycle detection ###
+        //
+        // In a valid acyclic graph, every course will eventually reach unsatisfiedPrerequisites 0 and be scheduled. If
+        // the total scheduled falls short of the total course count, it means one or more courses were never reachable;
+        // caused by a cycle in the prerequisite (e.g. A requires B, B requires A).
+        //
+        // Cycles make it impossible to ever satisfy all prerequisites, so the degree cannot be completed. This
+        // edge-case is presented to the user as an exception.
+        //
+        // The provided course prerequisites graph is assumed to not have any cycles.
+        if (scheduleCount < graph.getCourses().size()) {
+            throw new IllegalStateException(
+                    "A cycle was detected, this degree cannot be completed."
+            );
+        }
+
+        return schedule;
+    }
+
     public static void main(String[] args) {
         try {
             CourseGraph graph = buildFromFile("XBDA.txt");
             System.out.println(graph);
+
+            List<List<String>> schedule = computeSchedule(graph, 2);
+            System.out.println("\n=== Optimal Study Schedule ===");
+            for (int i = 0; i < schedule.size(); i++) {
+                System.out.printf("Study Period %d: %s%n", i + 1, schedule.get(i));
+            }
+            System.out.printf("%nTotal study periods: %d%n", schedule.size());
         } catch (IOException e) {
             System.err.println("Could not read file: " + e.getMessage());
         }
