@@ -1,9 +1,9 @@
 /**
  * File: Runner.java
- * Description: Computes the most time-efficient study schedule and displays an ordered list of study periods, where
- * each study period is a list of course codes to study for a provided structured course prerequisite text file
- * selected by the user, the user also provides the maximum number of courses that can be studied in a single study
- * period.
+ * Description: Entry point for the course scheduling program. Computes the most time-efficient study schedule and
+ * displays an ordered list of study periods, where each study period is a list of course codes to study for a provided
+ * structured course prerequisite text file selected by the user, the user also provides the maximum number of courses
+ * that can be studied in a single study period.
  * Author: Aidan Kelly-English
  * Student ID: 3159116
  * Email ID: aidan.kelly-english
@@ -17,6 +17,37 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * Entry point for the course scheduling program.
+ *
+ * <p>This class is responsible for three things:</p>
+ * <ol>
+ *     <li>Reading a structured course prerequisite file and building a {@link CourseGraph}</li>
+ *     <li>Computing the most time-efficient study schedule using a modified Kahn's algorithm</li>
+ *     <li>Displaying the resulting schedule to the user, organised by year and study period</li>
+ * </ol>
+ *
+ * <p> Users are prompted to provide:
+ * <ul>
+ *     <li>The name of the course prerequisite text file (including the {@code .txt} extension)</li>
+ *     <li>The maximum number of courses they can study concurrently in a single study period.</li>
+ * </ul>
+ * </p>
+ *
+ * <p>Example output for a degree with courses A, B and C (where B must precede A and C must precede B), with a
+ * concurrency limit of 2:</p>
+ * <pre>
+ *              Year 1
+ *  Study Period 1: [C]
+ *  Study Period 2: [B]
+ *  Study Period 3: [A]
+ *
+ *  Total study periods: 3
+ * </pre>
+ *
+ * <p>Study periods are grouped into years of 4 periods each. If the prerequisite graph contains a cycle, a
+ * {@link IllegalStateException} is thrown as the degree cannot be completed.</p>
+ */
 public class Runner {
 
     /**
