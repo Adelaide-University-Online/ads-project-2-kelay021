@@ -110,4 +110,31 @@ class CourseGraphTest {
             assertTrue(graph.getPrerequisites().get("C").isEmpty());
         }
     }
+
+    @Nested
+    @DisplayName("getCourses()")
+    class GetCoursesTests {
+
+        @Test
+        @DisplayName("Returns an empty set for a newly created graph")
+        void emptyGraph_returnsEmptySet() {
+            assertTrue(graph.getCourses().isEmpty());
+        }
+
+        @Test
+        @DisplayName("Returns the correct number of registered courses")
+        void afterAddingCourses_correctCountIsReturned() {
+            graph.addCourse("A");
+            graph.addCourse("B");
+            assertEquals(2, graph.getCourses().size());
+        }
+
+        @Test
+        @DisplayName("Returns all registered courses")
+        void afterAddingCourses_allCoursesAreReturned() {
+            graph.addCourse("A");
+            graph.addCourse("B");
+            assertTrue(graph.getCourses().containsAll(List.of("A", "B")));
+        }
+    }
 }
