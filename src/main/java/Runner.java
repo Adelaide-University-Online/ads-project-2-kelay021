@@ -1,10 +1,13 @@
 /**
  * File: Runner.java
- * Description: A brief description of this Java module.
+ * Description: Computes the most time-efficient study schedule and displays an ordered list of study periods, where
+ * each study period is a list of course codes to study for a provided structured course prerequisite text file
+ * selected by the user, the user also provides the maximum number of courses that can be studied in a single study
+ * period.
  * Author: Aidan Kelly-English
  * Student ID: 3159116
  * Email ID: aidan.kelly-english
- * AI Tool Used: Y/N (This includes all AI Tools e.g. ChatGPT, Microsoft or GitHub Copilot etc... Please leave blank if you do not wish to share this information)
+ * AI Tool Used: N
  * This is my own work as defined by
  *    the University's Academic Integrity Policy.
  **/

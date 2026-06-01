@@ -1,10 +1,11 @@
 /**
- * File: Runner.java
- * Description: A brief description of this Java module.
+ * File: CourseGraph.java
+ * Description: Defines a CourseGraph class which represents a directed graph of university courses and their
+ * prerequisites implemented using adjacency lists.
  * Author: Aidan Kelly-English
  * Student ID: 3159116
  * Email ID: aidan.kelly-english
- * AI Tool Used: Y/N (This includes all AI Tools e.g. ChatGPT, Microsoft or GitHub Copilot etc... Please leave blank if you do not wish to share this information)
+ * AI Tool Used: N
  * This is my own work as defined by
  *    the University's Academic Integrity Policy.
  **/
