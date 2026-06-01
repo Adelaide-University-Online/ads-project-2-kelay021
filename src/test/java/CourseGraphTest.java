@@ -137,4 +137,33 @@ class CourseGraphTest {
             assertTrue(graph.getCourses().containsAll(List.of("A", "B")));
         }
     }
+
+    @Nested
+    @DisplayName("getPrerequisites()")
+    class GetPrerequisiteTests {
+
+        @Test
+        @DisplayName("Returns an empty map for a newly created graph")
+        void emptyGraph_returnsEmptyMap() {
+            assertTrue(graph.getPrerequisites().isEmpty());
+        }
+
+        @Test
+        @DisplayName("Returns an empty list for a course with no prerequisites")
+        void courseWithNoPrerequisites_returnsEmptyList() {
+            graph.addCourse("A");
+            assertTrue(graph.getPrerequisites().get("A").isEmpty());
+        }
+
+        @Test
+        @DisplayName("Returns the correct prerequisites for a course")
+        void courseWithPrerequisites_returnsCorrectList() {
+            graph.addCourse("A");
+            graph.addCourse("B");
+            graph.addCourse("C");
+            graph.addPrerequisite("A", "B");
+            graph.addPrerequisite("A", "C");
+            assertEquals(List.of("A", "B"), graph.getPrerequisites().get("A"));
+        }
+    }
 }
