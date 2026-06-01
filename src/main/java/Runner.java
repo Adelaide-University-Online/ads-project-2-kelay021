@@ -196,12 +196,22 @@ public class Runner {
         int numConcurrentCourses = Integer.parseInt(scanner.nextLine().trim());
         try {
             CourseGraph graph = buildFromFile(filename);
+            System.out.println("\nCourse   -> [prerequisite1, prerequisite2, ...]");
+            System.out.println("-----------------------------------------------");
             System.out.println(graph);
 
             List<List<String>> schedule = computeSchedule(graph, numConcurrentCourses);
-            System.out.println("\n===== Optimal Study Schedule =====");
+            System.out.print("\n====== Optimal Study Schedule ======");
+            int yearCount = 1;
+            int studyPeriodCount = 1;
             for (int i = 0; i < schedule.size(); i++) {
-                System.out.printf("Study Period %d: %s%n", i + 1, schedule.get(i));
+                if (i % 4 == 0) {
+                    System.out.printf("%n\t\t\tYear %d%n", yearCount);
+                    yearCount += 1;
+                    studyPeriodCount = 1;
+                }
+                System.out.printf("Study Period %d: %s%n", studyPeriodCount, schedule.get(i));
+                studyPeriodCount += 1;
             }
             System.out.printf("%nTotal study periods: %d%n", schedule.size());
         } catch (IOException e) {
