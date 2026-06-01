@@ -61,4 +61,53 @@ class CourseGraphTest {
             assertEquals(List.of("A", "B", "C"), new ArrayList<>(graph.getCourses()));
         }
     }
+
+    @Nested
+    @DisplayName("addPrerequisite()")
+    class AddPrerequisiteTests {
+
+        @BeforeEach
+        void addCourses() {
+            graph.addCourse("A");
+            graph.addCourse("B");
+            graph.addCourse("C");
+        }
+
+        @Test
+        @DisplayName("Adds the prerequisite to the course's prerequisite list")
+        void singlePrerequisite_appearsInPrerequisitesMap() {
+            graph.addPrerequisite("A", "B");
+            assertTrue(graph.getPrerequisites().get("A").contains("B"));
+        }
+
+        @Test
+        @DisplayName("Adds the reverse edge to the prerequisite's dependents list")
+        void singlePrerequisite_reverseEdgeAppearsInDependentMap() {
+            graph.addPrerequisite("A", "B");
+            assertTrue(graph.getDependents().get("B").contains("A"));
+        }
+
+        @Test
+        @DisplayName("Records all prerequisites when a course has multiple")
+        void multiplePrerequisites_allAppearInPrerequisitesList() {
+            graph.addPrerequisite("A", "B");
+            graph.addPrerequisite("A", "C");
+            assertTrue(graph.getPrerequisites().get("A").containsAll(List.of("B", "C")));
+        }
+
+        @Test
+        @DisplayName("Records all dependents when a prerequisite is shared by multiple")
+        void sharedPrerequisite_allDependentsAppearInDependentsList() {
+            graph.addPrerequisite("A", "C");
+            graph.addPrerequisite("B", "C");
+            assertTrue(graph.getDependents().get("C").containsAll(List.of("A", "B")));
+        }
+
+        @Test
+        @DisplayName("Does not affect the prerequisite list of unrelated courses")
+        void prerequisiteAdded_doesNotAffectOtherCourses() {
+            graph.addPrerequisite("A", "B");
+            assertTrue(graph.getPrerequisites().get("C").isEmpty());
+        }
+    }
 }
