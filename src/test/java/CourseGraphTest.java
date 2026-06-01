@@ -166,4 +166,33 @@ class CourseGraphTest {
             assertEquals(List.of("A", "B"), graph.getPrerequisites().get("A"));
         }
     }
+
+    @Nested
+    @DisplayName("getDependents()")
+    class GetDependentsTests {
+
+        @Test
+        @DisplayName("Returns an empty map for a newly created graph")
+        void emptyGraph_returnsEmptyMap() {
+            assertTrue(graph.getDependents().isEmpty());
+        }
+
+        @Test
+        @DisplayName("Returns an empty list for a course with no dependents")
+        void courseWithNoDependents_returnsEmptyList() {
+            graph.addCourse("A");
+            assertTrue(graph.getDependents().get("A").isEmpty());
+        }
+
+        @Test
+        @DisplayName("Returns the correct dependents for a course")
+        void courseWithNoDependents_returnsCorrectList() {
+            graph.addCourse("A");
+            graph.addCourse("B");
+            graph.addCourse("C");
+            graph.addPrerequisite("A", "C");
+            graph.addPrerequisite("B", "C");
+            assertEquals(List.of("A", "B"), graph.getDependents().get("C"));
+        }
+    }
 }
