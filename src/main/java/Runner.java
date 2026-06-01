@@ -189,18 +189,25 @@ public class Runner {
     }
 
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter filename (including .txt): ");
+        String filename = scanner.nextLine().trim();
+        System.out.print("Enter number of courses able to be studied in one study period: ");
+        int numConcurrentCourses = Integer.parseInt(scanner.nextLine().trim());
         try {
-            CourseGraph graph = buildFromFile("XBDA.txt");
+            CourseGraph graph = buildFromFile(filename);
             System.out.println(graph);
 
-            List<List<String>> schedule = computeSchedule(graph, 2);
-            System.out.println("\n=== Optimal Study Schedule ===");
+            List<List<String>> schedule = computeSchedule(graph, numConcurrentCourses);
+            System.out.println("\n===== Optimal Study Schedule =====");
             for (int i = 0; i < schedule.size(); i++) {
                 System.out.printf("Study Period %d: %s%n", i + 1, schedule.get(i));
             }
             System.out.printf("%nTotal study periods: %d%n", schedule.size());
         } catch (IOException e) {
             System.err.println("Could not read file: " + e.getMessage());
+        } catch (IllegalStateException e) {
+            System.err.println("Scheduling error: " + e.getMessage());
         }
     }
 }
