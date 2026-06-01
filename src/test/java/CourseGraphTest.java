@@ -163,7 +163,7 @@ class CourseGraphTest {
             graph.addCourse("C");
             graph.addPrerequisite("A", "B");
             graph.addPrerequisite("A", "C");
-            assertEquals(List.of("A", "B"), graph.getPrerequisites().get("A"));
+            assertEquals(List.of("B", "C"), graph.getPrerequisites().get("A"));
         }
     }
 
@@ -193,6 +193,44 @@ class CourseGraphTest {
             graph.addPrerequisite("A", "C");
             graph.addPrerequisite("B", "C");
             assertEquals(List.of("A", "B"), graph.getDependents().get("C"));
+        }
+    }
+
+    @Nested
+    @DisplayName("toString()")
+    class ToStringTests {
+
+        @Test
+        @DisplayName("Returns an empty string for an empty graph")
+        void emptyGraph_returnsEmptyString() {
+            assertEquals("", graph.toString());
+        }
+
+        @Test
+        @DisplayName("Returns the correct format for a course with no prerequisites")
+        void courseWithNoPrerequisites_correctFormat() {
+            graph.addCourse("A");
+            assertEquals("A -> []\n", graph.toString());
+        }
+
+        @Test
+        @DisplayName("Returns the correct format for a course with one prerequisite")
+        void courseWithOnePrerequisite_correctFormat() {
+            graph.addCourse("A");
+            graph.addCourse("B");
+            graph.addPrerequisite("A", "B");
+            assertEquals("A -> [B]\nB -> []\n", graph.toString());
+        }
+
+        @Test
+        @DisplayName("Returns the correct format for a course with multiple prerequisites")
+        void courseWithMultiplePrerequisites_correctFormat() {
+            graph.addCourse("A");
+            graph.addCourse("B");
+            graph.addCourse("C");
+            graph.addPrerequisite("A", "B");
+            graph.addPrerequisite("A", "C");
+            assertEquals("A -> [B, C]\nB -> []\nC -> []\n", graph.toString());
         }
     }
 }
