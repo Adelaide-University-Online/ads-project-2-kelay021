@@ -1,3 +1,14 @@
+/**
+ * File: RunnerTest.java
+ * Description: JUnit5 unit test suite for Runner.
+ * Author: Aidan Kelly-English
+ * Student ID: 3159116
+ * Email ID: aidan.kelly-english
+ * AI Tool Used: N
+ * This is my own work as defined by
+ *    the University's Academic Integrity Policy.
+ **/
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import java.io.IOException;

@@ -1,3 +1,14 @@
+/**
+ * File: CourseGraphTest.java
+ * Description: JUnit5 unit test suite for CourseGraph.
+ * Author: Aidan Kelly-English
+ * Student ID: 3159116
+ * Email ID: aidan.kelly-english
+ * AI Tool Used: N
+ * This is my own work as defined by
+ *    the University's Academic Integrity Policy.
+ **/
+
 import org.junit.jupiter.api.*;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
