@@ -21,7 +21,8 @@ import java.util.*;
  * <p>Two adjacency lists are maintained internally:</p>
  * <ul>
  *     <li>{@code prerequisites} - maps each course to the courses it directly requires</li>
- *     <li>{@code dependents} - the reverse mapping; maps each course to the courses that become available once it is completed</li>
+ *     <li>{@code dependents} - the reverse mapping; maps each course to the courses that become available once it is
+ *     completed</li>
  * </ul>
  */
 public class CourseGraph {
