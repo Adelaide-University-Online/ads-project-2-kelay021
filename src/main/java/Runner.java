@@ -220,6 +220,15 @@ public class Runner {
         }
 
         return schedule;
+        /* Code inspired by:
+          Sanchhaya Education Ltd, 2025. Topological Sorting using BFS - Kahn's Algorithm. [online] GeeksforGeeks.
+          Available at: <https://www.geeksforgeeks.org/dsa/topological-sorting-indegree-based-solution/>
+          [Accessed 30 May 2026]
+
+          Sanchhaya Education Ltd, 2025. Find Course Schedule II. [online] GeeksforGeeks.
+          Available at: <https://www.geeksforgeeks.org/dsa/find-course-schedule-ii/>
+          [Accessed 30 May 2026]
+         */
     }
 
     public static void main(String[] args) {
