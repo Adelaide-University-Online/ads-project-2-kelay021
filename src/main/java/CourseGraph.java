@@ -82,6 +82,37 @@ public class CourseGraph {
     public Map<String, List<String>> getDependents() {return dependents;}
 
     /**
+     * Returns a hash code for this graph.
+     *
+     * <p>The hash code is calculated from {@code courses} and {@code prerequisites}.</p>
+     * @return a hash code value for this graph
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(courses, prerequisites);
+    }
+
+    /**
+     * Indicates whether another object is equal to this graph.
+     *
+     * <p>Two {@code courseGraph} instances are considered equal if they contain the same courses in the same insertion
+     * order, with identical prerequisite relationships. The {@code dependents} map is excluded from this comparison
+     * because it is derived completely from {@code prerequisites}, if the courses and prerequisites of two graphs are
+     * equal, their dependent maps must also be equal by definition.</p>
+     *
+     * @param other   the reference object with which to compare.
+     * @return {@code true} if {@code other} is a {@code CourseGraph} with the same courses and prerequisite
+     * relationships as this one
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        CourseGraph otherGraph = (CourseGraph) other;
+        return Objects.equals(courses, otherGraph.courses) && Objects.equals(prerequisites, otherGraph.prerequisites);
+    }
+
+    /**
      * Returns a string representation of the graph
      *
      * <p>Each line follows the format {@code COURSE -> [prereq1, prereq2, ...]}, listing every course alongside its
